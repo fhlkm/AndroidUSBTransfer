@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2013 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources>
+    <!-- Match all devices -->
+    <usb-device />
+
+
+    <!-- Android USB accessory: accessory -->
+    <usb-device vendor-id="16601" product-id="11520" />
+    <!-- Android USB accessory: accessory + adb -->
+    <usb-device vendor-id="16601" product-id="11521" />
+
+
+    <!--Samsung Android Device VID[0x04E8] -->
+    <usb-device vendor-id="1256" product-id="26720"  />          // Samsung MTP, PID[0x6860]
+    <usb-device vendor-id="1256" product-id="26725"  />          // Samsung PTP, PID[0x6865]
+    <usb-device vendor-id="1256" product-id="26726"  />          // Samsung PTP, PID[0x6866]
+    <usb-device vendor-id="1256" product-id="26736"  />          // Samsung MIDI, PID[0x6870]
+    <usb-device vendor-id="1256" product-id="26732"  />          // Samsung MIDI, PID[0x686C]
+    <usb-device vendor-id="1256" product-id="26718"  />          // Samsung VzW(CDROM) : PID[0x685E], 2개 이상의 CDFS(UMS) composit 모드
+    <usb-device vendor-id="1256" product-id="26715"  />          // Samsung VzW(CDROM) : PID[0x685B], 단일의 CDFS(UMS) 모드
+    <usb-device vendor-id="1256" product-id="26716"  />          // Samsung MTP, PID[0x685C], use MTP driver only in MTP mode. (OEM device ex. Phoenix)
+
+
+    <!--Other Vendor Android Device-->
+    <!-- Common usb class
+         class="255" subclass="255" protocol="0"     : MTP
+         class="6"   subclass="1"   protocol="1"     : PTP
+         class="8"   subclass="6"   protocol="80"    : Mass Storage    -->
+    //Confirmed Vendor
+    <usb-device vendor-id="2996"    class="255" subclass="255" protocol="0"/>           // HTC (High Tech Computer Corp.) : VID[0x0BB4]
+    <usb-device vendor-id="2996"    class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="2996"    class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="4100"    class="255" subclass="255" protocol="0"/>           // LG Electronics, Inc.           : VID[0x1004]
+    <usb-device vendor-id="4100"    class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="4100"    class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="1221"    class="255" subclass="255" protocol="0"/>           // Fujitsu, Ltd                   : VID[0x04C5]
+    <usb-device vendor-id="1221"    class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="1221"    class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="39861"   class="255" subclass="255" protocol="0"/>           // VIVO                           : VID[0x9BB5]
+    <usb-device vendor-id="39861"   class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="39861"   class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="3725"    class="255" subclass="255" protocol="0"/>           // Media Tek Inc.                 : VID[0x0E8D]     added for VIVO (X5Pro D PID[0x2008]), Lava (Thailand), Infinix
+    <usb-device vendor-id="3725"    class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="3725"    class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="11669"    class="255" subclass="255" protocol="0"/>           // VIVO X9s Plus                 : VID[0x2D95]
+    <usb-device vendor-id="11669"    class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="11669"    class="8"   subclass="6"   protocol="80"/>
+
+    <!--Warning! Do not add 1478(0x05c6) without class value because it is dedicated to Qualcomm-->
+    <usb-device vendor-id="1478"    class="255" subclass="255" protocol="0"/>          // Qualcomm, Inc.                  : VID[0x05c6]     added for VIVO (ex. Y28L)
+    <usb-device vendor-id="1478"    class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="1478"    class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="8888"    class="255" subclass="255" protocol="0"/>           // Motorola PCS                   : VID[0x22B8]
+    <usb-device vendor-id="8888"    class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="8888"    class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="1154"    class="255" subclass="255" protocol="0"/>           // KYOCERA                        : VID[0x0482]
+    <usb-device vendor-id="1154"    class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="1154"    class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="4046"    class="255" subclass="255" protocol="0"/>           // SONY ERICSSON                  : VID[0x0FCE]
+    <usb-device vendor-id="4046"    class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="4046"    class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="10007"   class="255" subclass="255" protocol="0"/>          // XIAOMI                         : VID[0x2717]
+    <usb-device vendor-id="10007"   class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="10007"   class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="1245"    class="255" subclass="255" protocol="0"/>           // SHARP                          : VID[0x04DD]
+    <usb-device vendor-id="1245"    class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="1245"    class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="4265"    class="255" subclass="255" protocol="0"/>           // PANTECH                        : VID[0x10A9]
+    <usb-device vendor-id="4265"    class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="4265"    class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="6127"    class="255" subclass="255" protocol="0"/>           // LENOVO                         : VID[0x17EF]
+    <usb-device vendor-id="6127"    class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="6127"    class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="11084"    class="255" subclass="255" protocol="0"/>          // LENOVO_N                       : VID[0x2B4C]   added for Lenovo(ex. Zuk Z2)
+    <usb-device vendor-id="11084"    class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="11084"    class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="7871"    class="255" subclass="255" protocol="0"/>           // Yulong Coolpad                 : VID[0x1EBF]
+    <usb-device vendor-id="7871"    class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="7871"    class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="8921"    class="255" subclass="255" protocol="0"/>           // OPPO                           : VID[0x22D9]
+    <usb-device vendor-id="8921"    class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="8921"    class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="4817"    class="255" subclass="255" protocol="0"/>           // HUAWEI                         : VID[0x12D1]
+    <usb-device vendor-id="4817"    class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="4817"    class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="6353"    class="255" subclass="255" protocol="0"/>           // Google Inc.                    : VID[0x18d1]
+    <usb-device vendor-id="6353"    class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="6353"    class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="10518"   class="255" subclass="255" protocol="0"/>          // Yota                           : VID[0x2916]
+    <usb-device vendor-id="10518"   class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="10518"   class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="10013"   class="255" subclass="255" protocol="0"/>          // Gionee                         : VID[0x271D]
+    <usb-device vendor-id="10013"   class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="10013"   class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="6610"    class="255" subclass="255" protocol="0"/>           // ZTE                            : VID[0x19D2]
+    <usb-device vendor-id="6610"    class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="6610"    class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="10821"   class="255" subclass="255" protocol="0"/>          // Meizu                          : VID[0x2A45]
+    <usb-device vendor-id="10821"   class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="10821"   class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="7099"   class="255" subclass="255" protocol="0"/>           // T and A Mobile Phones          : VID[0x1BBB]     added for Alcatel
+    <usb-device vendor-id="7099"   class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="7099"   class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="1161"   class="255" subclass="255" protocol="0"/>           // Foxconn                        : VID[0x0489]     added for TG and Company vendor(ex. Luna phone).
+    <usb-device vendor-id="1161"   class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="1161"   class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="11022"   class="255" subclass="255" protocol="0"/>          // LeEco                          : VID[0x2B0E]
+    <usb-device vendor-id="11022"   class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="11022"   class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="10864"   class="255" subclass="255" protocol="0"/>          // OnePlus                        : VID[0x2A70]
+    <usb-device vendor-id="10864"   class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="10864"   class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="2821"   class="255"   subclass="255"   protocol="0"/>       // ASUS                           : VID[0x0B05]
+    <usb-device vendor-id="2821"   class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="2821"   class="8"   subclass="6"   protocol="80"/>
+
+    //Not Confirmed Vendor Vendor
+    <usb-device vendor-id="1242"    class="255" subclass="255" protocol="0"/>          // Panasonic Mobile Communication : VID[0x04DA]
+    <usb-device vendor-id="1242"    class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="1242"    class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="1033"    class="255" subclass="255" protocol="0"/>          // NEC                            : VID[0x0409]
+    <usb-device vendor-id="1033"    class="6"   subclass="1"   protocol="1"/>
+    <usb-device vendor-id="1033"    class="8"   subclass="6"   protocol="80"/>
+
+    <usb-device vendor-id="6018" />                                                   // Spreadtrum Communications Inc. : VID[0x1782]     added for Smart MyPhone(ex. MY28S), cherry mobile(ex. Flare_J1)
+
+</resources>
