@@ -16,6 +16,9 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.accessorydisplay.sink.MainActivity;
+
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -286,21 +289,80 @@ public class UsbCommunication implements BaseCommunication, UsbDetachedReceiver.
                     /**
                      * 发送数据的地方 , 只接受byte数据类型的数据
                      */
-                    int i = mUsbDeviceConnection.bulkTransfer(mUsbEndpointOut, bytes, bytes.length, 3000);
+//                    int i = mUsbDeviceConnection.bulkTransfer(mUsbEndpointOut, bytes, bytes.length, 3000);
+//
+//                    if (i > 0) {//大于0表示发送成功
+//                        mHandler.sendEmptyMessage(SEND_MESSAGE_SUCCESS);
+//                        Log.i(TAG,"send date success");
+//                    } else {
+//                        mHandler.sendEmptyMessage(SEND_MESSAGE_FAILED);
+//                        Log.i(TAG,"send date failed");
+//                    }
 
-                    if (i > 0) {//大于0表示发送成功
-                        mHandler.sendEmptyMessage(SEND_MESSAGE_SUCCESS);
-                        Log.i(TAG,"send date success");
-                    } else {
-                        mHandler.sendEmptyMessage(SEND_MESSAGE_FAILED);
-                        Log.i(TAG,"send date failed");
+                    Log.i("usb:","*************************************************************");
+
+                    int times = 2*1024*12;//1M
+//                int times = 2;//1M
+                    long millis=System.currentTimeMillis();
+                    Log.i("usb:","start1: "+millis);
+                    for(int i=0;i<times;i++){
+                        Log.i("usb:","counter: "+i);
+                        int size = 512*1;// half k
+                        char[] chars = new char[size];
+                        Arrays.fill(chars, 'f');
+                        String string = new String(chars);
+                        int res = mUsbDeviceConnection.bulkTransfer(mUsbEndpointOut,string.getBytes() , string.getBytes().length, 3000);
+                        if (res > 0) {//大于0表示发送成功
+                            Log.i(TAG,"send date success");
+                        } else {
+                            Log.i(TAG,"send date failed");
+                        }
+
                     }
+
+                    long end=System.currentTimeMillis();
+                    Log.i("usb:","end1: "+end);
+                    Log.i("usb:","diff1: "+(end-millis));
                 }
             }).start();
         } else {
             listener.onFaild("发送数据为null");
 
         }
+    }
+
+    public void sendhalfKData(){
+
+        Thread mThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+//                try {
+                Log.i("usb:","*************************************************************");
+
+                int times = 2*1024*12;//1M
+//                int times = 2;//1M
+                long millis=System.currentTimeMillis();
+                Log.i("usb:","start1: "+millis);
+                for(int i=0;i<times;i++){
+                    Log.i("usb:","counter: "+i);
+                    int size = 512*1;// half k
+                    char[] chars = new char[size];
+// Optional step - unnecessary if you're happy with the array being full of \0
+                    Arrays.fill(chars, 'f');
+//                    sendString(conn, UsbAccessoryConstants.ACCESSORY_STRING_MANUFACTURER, new String(chars));
+
+                }
+
+                long end=System.currentTimeMillis();
+                Log.i("usb:","end1: "+end);
+                Log.i("usb:","diff1: "+(end-millis));
+//                } catch (Exception e) {
+//                    mLogger.log(e.getMessage());
+//                }
+
+            }
+        });
+        mThread.start();
     }
 
     //接收数据循环变量,usb连接成功后需要一直监听用户发送的数据

@@ -57,7 +57,7 @@ public class MainActivity extends Activity {
         usbCommunication.sendMessage(sendmessage.getBytes(), new SendMessageListener() {
             @Override
             public void onSuccess() {
-                Toast.makeText(MainActivity.this, "信息发送成功", Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(MainActivity.this, "信息发送成功", Toast.LENGTH_SHORT).show();
             }
 
             @Override
