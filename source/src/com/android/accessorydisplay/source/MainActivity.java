@@ -11,7 +11,6 @@ import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -21,15 +20,12 @@ import com.android.accessorydisplay.source.usb.ReciverMessageListener;
 import com.android.accessorydisplay.source.usb.SendMessageListener;
 import com.android.accessorydisplay.source.usb.UsbCommunication;
 
-import java.io.BufferedReader;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 
-public class MainActivity2 extends Activity {
+public class MainActivity extends Activity {
     UsbCommunication usbCommunication;
     String usbMessage;
     public String TAG="usb:MainActivity";
@@ -40,72 +36,38 @@ public class MainActivity2 extends Activity {
     PendingIntent permissionIntent;
     UsbAccessory[] accessoryList;
     ParcelFileDescriptor mFileDescriptor;
+    TextView mDisaply=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.source_activity);
+        mDisaply = (TextView) findViewById(R.id.logTextView);
         manager = (UsbManager) getSystemService(Context.USB_SERVICE);
         accessory = (UsbAccessory) getIntent().getParcelableExtra(UsbManager.EXTRA_ACCESSORY);
-
         accessoryList = manager.getAccessoryList();
-
-
         if(null !=accessoryList && null != accessoryList ){
             Log.d(TAG, "accessoryList is not null");
         }
-
-        final UsbAccessory accessory = (accessoryList == null ? null : accessoryList[0]);
+        if(null == accessory) {
+            accessory = (accessoryList == null ? null : accessoryList[0]);
+        }
         PendingIntent     mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
         if (accessory != null) {
             if (manager.hasPermission(accessory)) {
-                openAccessory(accessory);
+                openAccessoryAndSendMessage(accessory);
             } else {
-
-                manager.requestPermission(accessory,
-                        mPermissionIntent);
-
+                manager.requestPermission(accessory, mPermissionIntent);
             }
         } else {
             Log.d(TAG, "mAccessory is null");
         }
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
         registerReceiver(usbReceiver, filter);
-
-
-//        usbCommunication  =  UsbCommunication.getInstance(this);//初始化usb连接对象
-//        usbCommunication.openCommunication(new CommunicationListener() {//开启usb连接
-//            @Override
-//            public void onSuccess(int code, String msg) {//连接成功
-////                sendMessage.setEnabled(true);
-//                getUsbMessage();//接收usb数据
-//            }
-//
-//            @Override
-//            public void onFaild(String msg) {//连接失败
-//                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
-//            }
-//        });
-//
-//
-//        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                sendMessage();
-//            }
-//        });
-
-
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openAccessory(accessory);
-
-            }
-        });
-        findViewById(R.id.btn_read).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                openAccessoryAndSendMessage(accessory);
                 readMessage();
             }
         });
@@ -121,23 +83,30 @@ public class MainActivity2 extends Activity {
             Thread thread = new Thread(null, new Runnable() {
                 @Override
                 public void run() {
-                            try {
-                                StringBuilder sb= new StringBuilder();
-                                byte[] buf = new byte[1024];
-                                int length = 0;
-                                //循环读取文件内容，输入流中将最多buf.length个字节的数据读入一个buf数组中,返回类型是读取到的字节数。
-                                //当文件读取到结尾时返回 -1,循环结束。
-                                while((length = mInputStream.read(buf)) != -1){//keep take the thread
-                                    String info = new String(buf,0,length);
-                                    sb.append(info);
+                    try {
+                        final StringBuilder sb= new StringBuilder();
+                        byte[] buf = new byte[1024];
+                        int length = 0;
+                        //循环读取文件内容，输入流中将最多buf.length个字节的数据读入一个buf数组中,返回类型是读取到的字节数。
+                        //当文件读取到结尾时返回 -1,循环结束。
+                        while((length = mInputStream.read(buf)) != -1){//keep take the thread
+                            String info = new String(buf,0,length);
+                            sb.append(info);
 //                                    System.out.print(new String(buf,0,length));
-                                    Log.d(TAG, info);
+                            Log.d(TAG, info);
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mDisaply.setText("From sink: "+sb.toString());
                                 }
-                                mInputStream.close();
-                                Log.d(TAG, "read data: " + sb.toString());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                            });
+
+                        }
+                        mInputStream.close();
+                        Log.d(TAG, "read data: " + sb.toString());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }, "AccessoryController");
             thread.start();
@@ -146,7 +115,7 @@ public class MainActivity2 extends Activity {
             Log.d(TAG, "accessory open fail");
         }
     }
-    private void openAccessory(UsbAccessory accessory ) {
+    private void openAccessoryAndSendMessage(UsbAccessory accessory ) {
         if(null == mFileDescriptor) {
             mFileDescriptor = manager.openAccessory(accessory);
         }
@@ -168,13 +137,10 @@ public class MainActivity2 extends Activity {
                 }
             }, "AccessoryController");
             thread.start();
-
-
         } else {
             Log.d(TAG, "accessory open fail");
         }
     }
-
 
 
     private final BroadcastReceiver usbReceiver = new BroadcastReceiver() {
@@ -184,25 +150,17 @@ public class MainActivity2 extends Activity {
             if (ACTION_USB_PERMISSION.equals(action)) {
                 synchronized (this) {
                     accessory = (UsbAccessory) intent.getParcelableExtra(UsbManager.EXTRA_ACCESSORY);
-                    UsbAccessory[] accessoryList = manager.getAccessoryList();
-                    if(null != accessory ){
-                        Toast.makeText(MainActivity2.this,"Find Accessory",Toast.LENGTH_LONG).show();
-
-                    }
-                    if(null !=accessory && null != accessory ){
-                        Toast.makeText(MainActivity2.this,"Find Accessory",Toast.LENGTH_LONG).show();
-
-                    }
                     if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
                         if(accessory != null){
                             //call method to set up accessory communication
-                            Toast.makeText(MainActivity2.this,"Discovery accessory",Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this,"Discovery accessory,click connect,you can read message from sink",Toast.LENGTH_LONG).show();
+                            openAccessoryAndSendMessage(accessory);
                         }
                     }
                     else {
                         Log.d(TAG, "permission denied for accessory " + accessory);
                         manager.requestPermission(accessory, permissionIntent);
-                        Toast.makeText(MainActivity2.this,"Ask permission",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this,"Ask permission",Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -220,11 +178,11 @@ public class MainActivity2 extends Activity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(MainActivity2.this," permission granted",Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this," permission granted",Toast.LENGTH_LONG).show();
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                 } else {
-                    Toast.makeText(MainActivity2.this," permission dennied",Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this," permission dennied",Toast.LENGTH_LONG).show();
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }
@@ -241,12 +199,12 @@ public class MainActivity2 extends Activity {
         usbCommunication.sendMessage(sendmessage.getBytes(), new SendMessageListener() {
             @Override
             public void onSuccess() {
-                Toast.makeText(MainActivity2.this, "信息发送成功", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "信息发送成功", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFaild(String msg) {
-                Toast.makeText(MainActivity2.this, msg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -258,13 +216,13 @@ public class MainActivity2 extends Activity {
             @Override
             public void onSuccess(byte[] bytes) {
                 usbMessage = new String(bytes);
-                Toast.makeText(MainActivity2.this,usbMessage+" msg",Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this,usbMessage+" msg",Toast.LENGTH_LONG).show();
                 ((TextView)  findViewById(R.id.logTextView)).setText(usbMessage);
             }
 
             @Override
             public void onFaild(String msg) {
-                Toast.makeText(MainActivity2.this, msg, Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
             }
         });
     }

@@ -57,12 +57,24 @@ public class MainActivity extends Activity {
         usbCommunication.sendMessage(sendmessage.getBytes(), new SendMessageListener() {
             @Override
             public void onSuccess() {
-                Toast.makeText(MainActivity.this, "信息发送成功", Toast.LENGTH_SHORT).show();
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "信息发送成功", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
             }
 
             @Override
-            public void onFaild(String msg) {
-                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+            public void onFaild(final String msg) {
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
 
             }
         });

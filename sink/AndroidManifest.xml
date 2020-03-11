@@ -15,22 +15,23 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.android.accessorydisplay.sink" >
+    package="com.android.accessorydisplay.sink" >
 
     <uses-feature android:name="android.hardware.usb.host"/>
-<!--    <uses-sdk android:minSdkVersion="21" />-->
+    <!--    <uses-sdk android:minSdkVersion="21" />-->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".GeneralApplication"
         android:label="@string/app_name"
-            android:icon="@drawable/ic_app"
-            android:hardwareAccelerated="true">
+        android:icon="@drawable/ic_app"
+        android:hardwareAccelerated="true">
 
         <activity android:name=".MainActivity"
-                android:label="@string/app_name"
-                android:theme="@android:style/Theme.Holo">
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.Holo">
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
                 <action android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" />

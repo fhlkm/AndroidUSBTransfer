@@ -235,6 +235,8 @@ public class UsbCommunication implements BaseCommunication, UsbDetachedReceiver.
                             if (mUsbEndpointOut != null && mUsbEndpointIn != null) {
                                 mHandler.sendEmptyMessage(INIT_SUCCESS);
                             }
+                        }else{
+                            Toast.makeText(mContext,"mUsbDeviceConnection is null",Toast.LENGTH_LONG).show();
                         }
                     } else {
                         //申请usb权限
@@ -274,7 +276,7 @@ public class UsbCommunication implements BaseCommunication, UsbDetachedReceiver.
      * @param listener
      */
     @Override
-    public void sendMessage(final byte[] bytes, SendMessageListener listener) {
+    public void sendMessage(final byte[] bytes, final SendMessageListener listener) {
         this.sendMessageListener = listener;
         if (bytes != null) {
             /**
@@ -285,20 +287,34 @@ public class UsbCommunication implements BaseCommunication, UsbDetachedReceiver.
                 public void run() {
                     /**
                      * 发送数据的地方 , 只接受byte数据类型的数据
+                     *
                      */
-                    int i = mUsbDeviceConnection.bulkTransfer(mUsbEndpointOut, bytes, bytes.length, 3000);
+                    if(null != mUsbDeviceConnection) {
+                        int i = mUsbDeviceConnection.bulkTransfer(mUsbEndpointOut, bytes, bytes.length, 3000);
 
-                    if (i > 0) {//大于0表示发送成功
-                        mHandler.sendEmptyMessage(SEND_MESSAGE_SUCCESS);
-                        Log.i(TAG,"send date success");
-                    } else {
-                        mHandler.sendEmptyMessage(SEND_MESSAGE_FAILED);
-                        Log.i(TAG,"send date failed");
+                        if (i > 0) {//大于0表示发送成功
+                            mHandler.sendEmptyMessage(SEND_MESSAGE_SUCCESS);
+                            Log.i(TAG, "send date success");
+                            listener.onSuccess();
+
+                        } else {
+                            mHandler.sendEmptyMessage(SEND_MESSAGE_FAILED);
+                            Log.i(TAG, "send date failed");
+                            listener.onFaild("mUsbDeviceConnection is null");
+                        }
+                    }else{
+                        if(mUsbManager!=null){
+                            initDevice();
+                        }else{
+                            Log.i(TAG, "usbManager is null");
+                        }
+                        if(null == mUsbDeviceConnection)
+                        Log.i(TAG, "Please try again,if it doesn't work then try to unplug and plug usb to try");
                     }
                 }
             }).start();
         } else {
-            listener.onFaild("发送数据为null");
+            listener.onFaild("send data is null");
 
         }
     }
@@ -318,28 +334,17 @@ public class UsbCommunication implements BaseCommunication, UsbDetachedReceiver.
 
     public void receiveMessage(final ReciverMessageListener listener) {
         this.reciverMessageListener = listener;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SystemClock.sleep(1000);
-                while (isReceiverMessage) {
-                    /**
-                     * 循环接受数据的地方 , 只接受byte数据类型的数据
-                     */
-                    if (mUsbDeviceConnection != null && mUsbEndpointIn != null) {
-                        int i = mUsbDeviceConnection.bulkTransfer(mUsbEndpointIn, mBytes, mBytes.length, 3000);
-                        if (i > 0) {
-                            Message message = Message.obtain();
-                            message.what = RECEIVER_MESSAGE_SUCCESS;
-                            message.obj = mBytes;
-                            mHandler.sendMessage(message);
-                        }
-                    } else {
-                        mHandler.sendEmptyMessage(RECEIVER_MESSAGE_FAILED);
-                    }
-                }
+        if (mUsbDeviceConnection != null && mUsbEndpointIn != null) {
+            int i = mUsbDeviceConnection.bulkTransfer(mUsbEndpointIn, mBytes, mBytes.length, 3000);
+            if (i > 0) {
+                Message message = Message.obtain();
+                message.what = RECEIVER_MESSAGE_SUCCESS;
+                message.obj = mBytes;
+                mHandler.sendMessage(message);
             }
-        }).start();
+        } else {
+            mHandler.sendEmptyMessage(RECEIVER_MESSAGE_FAILED);
+        }
     }
 
     /**
